@@ -1,7 +1,14 @@
 import dotenv from "dotenv"
 import connectDB from "./db/index.js";
+import { app } from "./app.js";
+
+app.use((req, res, next) => {
+    res.setHeader("Content-Security-Policy", "default-src 'self' blob:; script-src 'self' 'unsafe-inline' blob:;");
+    next();
+  });
+  
 dotenv.config({
-    path: './env'
+    path: './.env'
 })
 connectDB()
 .then(()=>{
@@ -12,3 +19,10 @@ connectDB()
 .catch((err)=>{
     console.log("mongo connection error",err);
 })
+
+app.use((req, res, next) => {
+    console.log(`Request Path: ${req.path}`);
+    next();
+});
+
+
